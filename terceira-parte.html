@@ -348,7 +348,7 @@
             });
         } else {
             let randomIndices = [];
-            while(randomIndices.length < 3) {
+            while (randomIndices.length < 3) {
                 let rand = Math.floor(Math.random() * gridItems.length);
                 if (!randomIndices.includes(rand) && gridItems[rand].textContent === "") {
                     randomIndices.push(rand);
@@ -362,14 +362,26 @@
     }
 
     function updateInfo() {
-        const protecao = Math.floor(Math.random() * 5) + 1;
+        const protecao = 3; // Sempre 3
         const minas = Math.floor(Math.random() * 10000);
-        const validade = `${Math.floor(Math.random() * 23)}:${Math.floor(Math.random() * 60)}`;
+
+        // Obtém o horário atual e adiciona um tempo aleatório entre 0 e 30 minutos
+        let now = new Date();
+        let minutosAdicionais = Math.floor(Math.random() * 31); // Número aleatório entre 0 e 30
+        now.setMinutes(now.getMinutes() + minutosAdicionais);
+        const horas = String(now.getHours()).padStart(2, '0');
+        const minutos = String(now.getMinutes()).padStart(2, '0');
+        const validade = `${horas}:${minutos}`;
 
         document.getElementById('protections').textContent = `Proteções: Até ${protecao}`;
         document.getElementById('mines').textContent = `N° de Minas: ${String(minas).padStart(4, '0')}`;
         document.getElementById('validity').textContent = `Válido até: ${validade}`;
     }
+
+    // Chama a função updateInfo() assim que a página carrega para definir o tempo inicial correto
+    window.onload = function() {
+        updateInfo();
+    };
 </script>
 
 </body>
