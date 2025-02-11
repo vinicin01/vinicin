@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notificações de Ganhos</title>
+    <style>
+        body {
+            background-color: #1a1a1a;
+            color: white;
+            font-family: Arial, sans-serif;
+            overflow-x: hidden;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding-bottom: 70px;
+        }
+
+        .top-bar {
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 15px;
+            box-sizing: border-box;
+            position: fixed;
+            top: 0;
+            left: 0;
+            background-color: #1a1a1a;
+        }
+
+        .inicio {
+            font-size: 20px;
+            color: white;
+            font-weight: bold;
+        }
+
+        .icons {
+            display: flex;
+            gap: 15px;
+        }
+
+        .icon-box {
+            background-color: #555;
+            border-radius: 50%;
+            padding: 12px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+
+        .icon-box:hover {
+            background-color: #007bff;
+            transform: scale(1.1);
+        }
+
+        .icon-box img {
+            width: 18px;
+            height: 18px;
+        }
+
+        .header-line {
+            width: 100%;
+            height: 1px;
+            background-color: #d3d3d3;
+            position: absolute;
+            top: 60px;
+            left: 0;
+        }
+
+        .game-section {
+            margin-top: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+            width: 100%;
+            justify-content: flex-start;
+        }
+
+        .game-section img {
+            width: 20px;
+            height: 20px;
+            margin-right: 8px;
+            background-color: #007bff;
+            border-radius: 50%;
+            padding: 5px;
+            transition: transform 0.3s ease-in-out;
+        }
+
+        .game-section img:hover {
+            transform: scale(1.2);
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: #333;
+            padding: 15px 20px;
+            border-radius: 10px;
+            color: white;
+            text-align: center;
+            width: 250px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+        }
+
+        .close-btn, .redirect-btn, .ganhos-close-btn {
+            background-color: #007bff;
+            border: none;
+            color: white;
+            padding: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .close-btn:hover, .redirect-btn:hover, .ganhos-close-btn:hover {
+            background-color: #0056b3;
+        }
+
+.footer-section {
+    width: 100%;
+    background-color: #1a1a1a;
+    color: white;
+    text-align: center;
+    padding: 10px;
+    position: fixed;
+    bottom: 0;
+    display: flex;
+    justify-content: center; /* Garante que os itens fiquem centralizados */
+    gap: -500px; /* Reduzido o gap entre os itens */
+    align-items: center; /* Garante o alinhamento vertical */
+}
+
+        .footer-section div {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .footer-section img {
+            width: 20px;
+            height: 20px;
+        }
+
+.footer-section .footer-item {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 100px;
+}
+
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(5, 50px);
+            grid-template-rows: repeat(5, 50px);
+            gap: 10px;
+            margin-top: 80px;
+            align-items: center;
+            justify-items: center;
+        }
+
+        .grid-item {
+            width: 45px;
+            height: 45px;
+            background-color: #aaa;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 18px;
+            border-radius: 5px;
+        }
+
+        .new-button {
+            background-color: #007bff;
+            color: white;
+            padding: 10px 25px;
+            margin-top: 30px;
+            border: none;
+            border-radius: 20px;
+            font-size: 18px;
+            cursor: pointer;
+            box-shadow: 0 4px 8px rgba(0, 123, 255, 0.5);
+            transition: background-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .new-button:hover {
+            background-color: #0056b3;
+            transform: scale(1.05);
+            box-shadow: 0 6px 12px rgba(0, 123, 255, 0.7);
+        }
+
+        .new-button:active {
+            transform: scale(1);
+            box-shadow: 0 4px 8px rgba(0, 123, 255, 0.5);
+        }
+
+        .info-section {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            margin-top: 80px;
+        }
+
+        .info-item {
+            font-size: 16px;
+            color: white;
+            margin: 0 10px;
+            padding: 8px 15px;
+            position: relative;
+            display: inline-block;
+        }
+
+        .info-item::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(255, 255, 255, 0.1);
+            z-index: -1;
+            border-radius: 5px;
+        }
+
+        .no-signal-message {
+            font-size: 18px;
+            color: #f00;
+            font-weight: bold;
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        /* Muda o layout apenas para dispositivos móveis */
+@media (max-width: 768px) {
+    .inicio {
+        display: inline;
+    }
+
+    .inicio::after {
+        content: ", Bônus";
+        font-weight: normal;
+    }
+            .footer-section .footer-item {
+                flex-direction: row; /* Garante que os itens fiquem lado a lado */
+                justify-content: center;
+                gap: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="top-bar">
+    <span class="inicio">Início</span>
+    <div class="icons">
+        <div class="icon-box" onclick="openNotificationModal()">
+            <img src="notificação.png" alt="Notificação">
+        </div>
+        <div class="icon-box" onclick="openAccountModal()">
+            <img src="conta.png" alt="Conta">
+        </div>
+    </div>
+</div>
+
+<div class="header-line"></div>
+
+<div class="info-section">
+    <div class="info-item" id="protections">Proteções: Até 2</div>
+    <div class="info-item" id="mines">N° de Minas: 0303</div>
+    <div class="info-item" id="validity">Válido até: 22:18</div>
+</div>
+
+<!-- Adicionando a mensagem inicial "Sem sinal!" -->
+<div id="no-signal-container" class="no-signal-message">Sem sinal!</div>
+
+<div class="grid-container" id="grid-container" style="display: none;">
+    <div class="grid-item"></div>
+    <div class="grid-item"></div>
+    <div class="grid-item"></div>
+    <div class="grid-item"></div>
+    <div class="grid-item"></div>
+    <div class="grid-item"></div>
+    <div class="grid-item"></div>
+    <div class="grid-item"></div>
+    <div class="grid-item"></div>
+    <div class="grid-item"></div>
+    <div class="grid-item"></div>
+    <div class="grid-item"></div>
+    <div class="grid-item"></div>
+    <div class="grid-item"></div>
+    <div class="grid-item"></div>
+    <div class="grid-item"></div>
+    <div class="grid-item"></div>
+    <div class="grid-item"></div>
+    <div class="grid-item"></div>
+    <div class="grid-item"></div>
+    <div class="grid-item"></div>
+    <div class="grid-item"></div>
+    <div class="grid-item"></div>
+    <div class="grid-item"></div>
+    <div class="grid-item"></div>
+
+
+</div>
+
+<button class="new-button" onclick="toggleDiamonds()">Identificar sinal</button>
+
+<iframe src="https://olawin.net/yjdyzmg2k" width="100%" height="800px" style="border: none; margin-top: 50px;"></iframe>
+
+<div class="footer-section">
+    <div style="margin-right: 535px;">
+        <img src="casa.png" alt="Casa" style="width: 20px; height: 20px; display: block; margin: 0 auto; filter: brightness(0) invert(1);">
+        <span>Início</span>
+    </div>
+    <div style="margin-left: 100px;" onclick="openBonusModal()">
+        <img src="estrela.png" alt="Estrela" style="width: 20px; height: 20px; display: block; margin: 0 auto; filter: brightness(0) invert(1);">
+        <span>Bônus</span>
+    </div>
+</div>
+
+<script>
+    let diamondsVisible = false;
+
+    function toggleDiamonds() {
+        let gridItems = document.querySelectorAll(".grid-item");
+        let noSignalMessage = document.getElementById('no-signal-container');
+        let gridContainer = document.getElementById('grid-container');
+
+        // Exibir a grade e esconder a mensagem "Sem sinal!"
+        noSignalMessage.style.display = 'none';
+        gridContainer.style.display = 'grid';
+
+        if (diamondsVisible) {
+            gridItems.forEach(item => {
+                item.textContent = "";
+            });
+        } else {
+            let randomIndices = [];
+            while(randomIndices.length < 3) {
+                let rand = Math.floor(Math.random() * gridItems.length);
+                if (!randomIndices.includes(rand) && gridItems[rand].textContent === "") {
+                    randomIndices.push(rand);
+                    gridItems[rand].textContent = "💎";
+                }
+            }
+        }
+
+        diamondsVisible = !diamondsVisible;
+        updateInfo();
+    }
+
+    function updateInfo() {
+        const protecao = Math.floor(Math.random() * 5) + 1;
+        const minas = Math.floor(Math.random() * 10000);
+        const validade = `${Math.floor(Math.random() * 23)}:${Math.floor(Math.random() * 60)}`;
+
+        document.getElementById('protections').textContent = `Proteções: Até ${protecao}`;
+        document.getElementById('mines').textContent = `N° de Minas: ${String(minas).padStart(4, '0')}`;
+        document.getElementById('validity').textContent = `Válido até: ${validade}`;
+    }
+</script>
+
+</body>
+</html>

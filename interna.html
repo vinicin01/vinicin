@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notificações de Ganhos</title>
+    <style>
+        body {
+            background-color: #1a1a1a;
+            color: white;
+            font-family: Arial, sans-serif;
+            overflow-x: hidden;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+        }
+        .top-bar {
+            width: 100%;
+            display: flex;
+            justify-content: flex-end;
+            align-items: flex-start;
+            padding: 10px 30px;
+            position: absolute;
+            top: 1px;
+            left: 0;
+            box-sizing: border-box;
+        }
+
+        .inicio {
+            font-size: 22px;
+            color: white;
+            font-weight: bold;
+            margin-left: -10px;
+            margin-top: 8px;
+        }
+
+        .icons {
+            display: flex;
+            gap: 15px;
+            margin-left: auto;
+        }
+
+        .icon-box {
+            background-color: #555;
+            border-radius: 50%;
+            padding: 12px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+
+        .icon-box:hover {
+            background-color: #007bff;
+            transform: scale(1.1);
+        }
+
+        .icon-box img {
+            width: 18px;
+            height: 18px;
+        }
+
+        .header-line {
+            width: 100%;
+            height: 1px;
+            background-color: #d3d3d3;
+            position: absolute;
+            top: 60px;
+            left: 0;
+        }
+
+        .marquee-container {
+            width: 100%;
+            overflow: hidden;
+            white-space: nowrap;
+            position: relative;
+            padding: 10px 0;
+            margin-top: -25px;                
+        }
+
+        .marquee {
+            display: flex;
+            animation: scroll 20s linear infinite;
+        }
+
+        .marquee-item {
+            display: flex;
+            align-items: center;
+            background: #1a1a1a;
+            padding: 5px 25px;
+            border: 1px solid #007bff;
+            font-size: 16px;
+            border-radius: 15px;
+            box-shadow: 0 0 1px #007bff, 0 0 5px #007bff;
+            white-space: nowrap;
+        }
+
+        @keyframes scroll {
+            from {
+                transform: translateX(100%);
+            }
+            to {
+                transform: translateX(-100%);
+            }
+        }
+
+        .marquee-item img {
+            width: 20px;
+            height: 20px;
+            margin-right: 8px;
+            filter: brightness(0) invert(1);
+        }
+
+        .blue {
+            color: #007bff;
+        }
+
+        .center-image {
+            margin-top: 20px;
+            width: 230px;
+            height: auto;
+            border-radius: 10px;
+            border: 2px solid #007bff;
+        }
+
+        .game-section {
+            margin-top: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            gap: 5px;
+            width: 16%;
+        }
+        .game-section img {
+            width: 20px;
+            height: 20px;
+            margin-right: 8px;
+            background-color: #007bff;
+            border-radius: 50%;
+            padding: 5px;
+            transition: transform 0.3s ease-in-out;
+        }
+
+        .game-section img:hover {
+            transform: scale(1.2);
+        }
+
+/* Modal de Notificação */
+.modal {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #333;
+    padding: 15px 20px; /* Diminui o padding */
+    border-radius: 10px;
+    color: white;
+    text-align: center;
+    width: 250px; /* Diminui a largura */
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+}
+
+/* Modal de Conta */
+.ganhos-modal {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #333;
+    padding: 15px 20px; /* Diminui o padding */
+    border-radius: 10px;
+    color: white;
+    text-align: center;
+    width: 250px; /* Diminui a largura */
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+}
+        .close-btn {
+            margin-top: 20px;
+            background-color: #007bff;
+            border: none;
+            color: white;
+            padding: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .close-btn:hover {
+            background-color: #0056b3;
+        }
+
+        .redirect-btn {
+            background: linear-gradient(135deg, #007bff, #00c6ff);
+            color: white;
+            padding: 12px 30px;
+            margin-top: 20px;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            font-size: 18px;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(0, 123, 255, 0.5);
+        }
+
+        .redirect-btn:hover {
+            background: linear-gradient(135deg, #00c6ff, #007bff);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 123, 255, 0.7);
+        }
+
+        .redirect-btn:active {
+            transform: translateY(1px);
+        }
+
+        .footer-section {
+            width: 100%;
+            background-color: #1a1a1a;
+            color: white;
+            text-align: center;
+            padding: 10px;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            display: flex;
+            justify-content: center;
+            gap: 100px;
+        }
+
+        .ganhos-modal {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: #333;
+            padding: 20px;
+            border-radius: 10px;
+            color: white;
+            text-align: center;
+            width: 300px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+        }
+
+        .ganhos-modal p {
+            margin: 0;
+            font-size: 16px;
+        }
+
+        .ganhos-modal p span {
+            font-size: 12px;
+        }
+
+        .ganhos-close-btn {
+            margin-top: 20px;
+            background-color: #007bff;
+            border: none;
+            color: white;
+            padding: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .ganhos-close-btn:hover {
+            background-color: #0056b3;
+        }
+
+@media screen and (max-width: 768px) {
+    .game-section {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        margin-top: 5px;
+    }
+
+    .game-section img {
+        order: -1;
+    }
+
+    .game-section h3 {
+        margin-top: 10;
+        white-space: nowrap; /* Impede que a palavra quebre em várias linhas */
+    }
+}
+            .footer-section div {
+                margin: 0 !important;
+            }
+
+            body {
+                padding-bottom: 70px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="top-bar">
+    <span class="inicio">Início</span>
+    <div class="icons">
+        <div class="icon-box" onclick="openNotificationModal()">
+            <img src="notificação.png" alt="Notificação">
+        </div>
+        <div class="icon-box" onclick="openAccountModal()">
+            <img src="conta.png" alt="Conta">
+        </div>
+    </div>
+</div>
+
+<div class="header-line"></div>
+
+<div class="marquee-container">
+    <div class="marquee">
+        <script>
+            let nomes = ["Maísa", "Carlos", "Lucas", "Juliana", "Fernando", "Amanda", "Bruno", "Gabriela", "Rodrigo", "Camila"];
+            let jogos = ["Mines", "Blaze", "Aviator", "Double", "Roleta"];
+            let valores = ["4,77", "12,50", "25,00", "18,90", "50,00"];
+            let marqueeDiv = document.querySelector(".marquee");
+            
+            nomes.forEach((nome, index) => {
+                let item = document.createElement("div");
+                item.classList.add("marquee-item");
+                item.innerHTML = `<img src='pix.png' alt='Pix'> <span class='white'>${nome} ganhou</span> <span class='blue'>R$ ${valores[index % valores.length]} no ${jogos[index % jogos.length]}</span>`;
+                marqueeDiv.appendChild(item);
+            });
+            
+            nomes.forEach((nome, index) => {
+                let item = document.createElement("div");
+                item.classList.add("marquee-item");
+                item.innerHTML = `<img src='pix.png' alt='Pix'> <span class='white'>${nome} ganhou</span> <span class='blue'>R$ ${valores[index % valores.length]} no ${jogos[index % jogos.length]}</span>`;
+                marqueeDiv.appendChild(item);
+            });
+        </script>
+    </div>
+</div>
+
+<img src="foto interna.jpg" alt="Imagem Central" class="center-image">
+
+<div class="game-section">
+    <img src="controle.png" alt="Controle de Jogo">
+    <h3>Jogos Disponíveis</h3>
+</div>
+
+<a href="terceira-parte.html" class="redirect-btn">VENHA FAZER GRANA</a>
+
+<div class="footer-section">
+    <div style="margin-right: 535px;">
+        <img src="casa.png" alt="Casa" style="width: 20px; height: 20px; display: block; margin: 0 auto; filter: brightness(0) invert(1);">
+        <span>Início</span>
+    </div>
+    <div style="margin-left: 100px;" onclick="openBonusModal()">
+        <img src="estrela.png" alt="Estrela" style="width: 20px; height: 20px; display: block; margin: 0 auto; filter: brightness(0) invert(1);">
+        <span>Bônus</span>
+    </div>
+</div>
+
+<!-- Modal de Ganhos -->
+<div class="ganhos-modal" id="ganhosModal">
+    <p>Parabéns! Você ganhou R$50,00 no jogo Aviator!</p>
+    <button class="ganhos-close-btn" onclick="closeGanhosModal()">Fechar</button>
+</div>
+
+<!-- Modal de Notificação -->
+<div class="modal" id="notificationModal">
+    <p>Sem Notificações</p>
+    <button class="close-btn" onclick="closeNotificationModal()">Fechar</button>
+</div>
+
+<!-- Modal de Bônus -->
+<div class="modal" id="bonusModal">
+    <p>Sem bônus no momento!</p>
+    <button class="close-btn" onclick="closeBonusModal()">Fechar</button>
+</div>
+
+<!-- Modal de Conta -->
+<div class="ganhos-modal" id="accountModal">
+    <p>Escolha uma opção:</p>
+    <button class="ganhos-close-btn" onclick="closeAccountModal()">Fechar</button>
+    <button class="ganhos-close-btn" onclick="goPremium()">Seja Premium</button>
+    <button class="ganhos-close-btn" onclick="logout()">Deslogar</button>
+</div>
+
+<script>
+    function openNotificationModal() {
+        document.getElementById("notificationModal").style.display = "block";
+    }
+
+    function closeNotificationModal() {
+        document.getElementById("notificationModal").style.display = "none";
+    }
+
+    function openBonusModal() {
+        document.getElementById("bonusModal").style.display = "block";
+    }
+
+    function closeBonusModal() {
+        document.getElementById("bonusModal").style.display = "none";
+    }
+
+    function openAccountModal() {
+        document.getElementById("accountModal").style.display = "block";
+    }
+
+    function closeAccountModal() {
+        document.getElementById("accountModal").style.display = "none";
+    }
+
+    function goPremium() {
+        alert("Você agora é Premium!");
+        closeAccountModal();
+    }
+
+    function logout() {
+        alert("Você foi deslogado!");
+        closeAccountModal();
+    }
+
+    function openGanhosModal() {
+        document.getElementById("ganhosModal").style.display = "block";
+    }
+
+    function closeGanhosModal() {
+        document.getElementById("ganhosModal").style.display = "none";
+    }
+</script>
+
+</body>
+</html>
